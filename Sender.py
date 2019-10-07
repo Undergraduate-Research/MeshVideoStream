@@ -37,4 +37,4 @@ while True:
     buffer += frameBytes
     PublishSocket.send(buffer)
     old_frame = frame
-    cv2.waitKey(1)
+    cv2.waitKey(120)

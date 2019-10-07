@@ -19,7 +19,7 @@ SubscribeSocket.setsockopt(zmq.SUBSCRIBE, b"")
 while True:
     buffer = SubscribeSocket.recv()
     #print(buffer[0])
-    if buffer[0] == b"A":
+    if buffer[0] == ord(b"A"):
         stream.write(buffer[1:])
         continue
     shape = struct.unpack("HH",buffer[1:5])
