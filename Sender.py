@@ -5,36 +5,29 @@ import cv2
 import numpy
 import struct
 
+ip = "0.0.0.0"
 port = 8000
 camNumber = 0
 
-PyAudio = pyaudio.PyAudio()
 context = zmq.Context()
 PublishSocket = context.socket(zmq.PUB)
-PublishSocket.set_hwm(2)
-PublishSocket.bind("tcp://0.0.0.0:%s" % port)
-capture = VideoCapture(camNumber)
+PublishSocket.set_hwm(2) #Set ZMQ high water mark
+PublishSocket.bind("tcp://"+ip+":%s" % port) # Bind server to ip
+capture = VideoCapture(camNumber) #Video Source
 
+frames = 0
 
-   
-def Audio(in_data,frame_count,time_info,status_flag):
-    PublishSocket.send(b"A"+in_data) 
-    return (None,0)
-
-stream = PyAudio.open(2048*8,1,pyaudio.paInt16,True,False,None,None,2048,True,None,None,Audio)       
-    
-stream.start_stream()
-
-old_frame = capture.read()
 while True:
-    buffer = b"V"
-    ret,frame = capture.read()
-    if numpy.array_equal(old_frame,frame):
-        cv2.waitKey(1)
+    buffer = b""
+    ret,frame = capture.read() #Read camera 
+    if frames < 2:  #Skipping frames
+        frames += 1
         continue
-    frameBytes = frame.tobytes()
-    buffer += struct.pack("HH",frame.shape[0],frame.shape[1])
-    buffer += frameBytes
-    PublishSocket.send(buffer)
-    old_frame = frame
-    cv2.waitKey(120)
+    else:
+        frames = 0
+    frame = cv2.resize(frame,(240,320)) #Downsize the video frame   
+    frameBytes = frame.tobytes() #Convert it to bytes   
+    buffer += struct.pack("HH",frame.shape[0],frame.shape[1]) #Pack frame size into packet
+    buffer += frameBytes #Add frame data to packet
+    PublishSocket.send(buffer) #Send Packet
+    cv2.waitKey(1)
