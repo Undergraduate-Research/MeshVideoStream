@@ -1,0 +1,47 @@
+
+<script>
+
+function postMessage(){
+    
+    message = {}
+    message["username"] = document.getElementById("username").value
+    message["message"] = document.getElementById("message").value
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST","/");
+    xmlhttp.setRequestHeader("Content-Type","application/json");
+    xmlhttp.send(JSON.stringify(message));
+    fetchMessages()
+}
+
+function processMessages(){
+    messageDiv = document.getElementById("messages")
+    messageDiv.innerHTML = ""
+    var index = 0;
+    messages =  JSON.parse(this.responseText);
+    for (index = 0;index < messages.length; index++){
+        date = new Date(messages[index]["time"]*1000)
+        messageDiv.innerHTML += date.toLocaleString()+":<b>"+messages[index]["username"]+"</b>:"+messages[index]["message"]+"<br>";
+    }
+
+}
+
+function fetchMessages(){
+    request = new XMLHttpRequest();
+    request.addEventListener("load",processMessages)
+    request.open("GET","/messages")
+    request.send()
+}
+
+setInterval(fetchMessages,1000)
+
+</script>
+
+<body>
+<div id="messages"></div>
+
+  Name:
+  <input id="username" type="text" name="username" value="">
+  Message:
+  <input id="message" type="text" name="message" value="">
+  <input type="submit" onclick="postMessage()" value="Submit">
+</body>

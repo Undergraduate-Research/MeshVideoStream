@@ -27,7 +27,7 @@ SubscribeSocket.connect("tcp://"+ip+":%s" % port) #Connect to server
 SubscribeSocket.setsockopt(zmq.SUBSCRIBE, b"")
 
 def AddFPS(frame1,string):
-    cv2.putText(frame1,string,(0,25),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,0),2, cv2.LINE_AA)
+    cv2.putText(frame1,string,(0,25),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2, cv2.LINE_AA)
     return frame1
 
 frames = 0
@@ -50,6 +50,7 @@ while True:
         timea = time.time()
         fps = frames//5
         frames = 0
+    
     cv2.imshow("Video",AddFPS(frame,str(fps)+" FPS")) #Display the frame
     cv2.waitKey(1)
    
