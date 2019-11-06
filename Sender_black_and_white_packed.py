@@ -52,10 +52,10 @@ while True:
     #gray = Filter(frame2,SHARPEN)
     #gray = floyd_steinberg(frame2)
     gray =Dither(frame2,zeros(frame2.shape),125) 
-    #frameBytes = np.packbits(gray//255) #Convert it to bytes
+    frameBytes = np.packbits(gray//255) #Convert it to bytes
     
     buffer += struct.pack("HH",gray.shape[0],gray.shape[1]) #Pack frame size into packet
-    buffer += gray.tobytes()
+    buffer += frameBytes.tobytes()
     compressed = bz2.compress(buffer,9)
     PublishSocket.send(compressed) #Send Packet
     bytes += len(compressed)

@@ -39,8 +39,9 @@ while True:
     shape = struct.unpack("HH",buffer[1:5])
     frameBytes = buffer[5:] #Get Frame Bytes
     frame = np.frombuffer(frameBytes,dtype = np.uint8) #Convert bytes to frame array
-    #frame = np.unpackbits(np.asarray(frame,dtype=np.uint8))
+    frame = np.unpackbits(np.asarray(frame,dtype=np.uint8))
     frame.shape = shape
+    frame = (frame*255)
     frame = cv2.resize(frame,(int(640*1.5),int(480*1.5))) #Upscale Frame 
     frame = Filter(frame,SMOOTH)
     frames += 1
