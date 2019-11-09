@@ -2,4 +2,3 @@ zmq
 numpy
 PyAudio
 opencv-python
-numba

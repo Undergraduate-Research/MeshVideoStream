@@ -9,6 +9,9 @@ SMOOTH = np.ones((3,3),np.float32)/9
 def zeros(shape):
     return np.zeros(shape, dtype=int)
 
+def RGBAWhite(shape):
+    return np.ones(shape, dtype=int)*255
+
 
 #Floyd–Steinberg dithering algorithm 
    
@@ -36,14 +39,6 @@ def Dither(num,derr, thresh = 175):
                 if x + 1 < num.shape[1]:
                     derr[y + 1, x + 1] += errval / div
     return (num[::-1,:] * 255)[::-1, ...].astype(np.uint8)
-
-
-@numba.jit(nopython=True)
-def SplitGray(in_frame,out_frame):
-    for y in range(in_frame.shape[0]):
-        for x in range(in_frame.shape[1]):
-            out_frame[y,x] = in_frame[y,x]
-    return out_frame
     
 def Filter(frame,filter):
     return cv2.filter2D(frame, -1, filter)

@@ -1,17 +1,6 @@
 
 <script>
 
-function postMessage(){
-    
-    message = {}
-    message["username"] = document.getElementById("username").value
-    message["message"] = document.getElementById("message").value
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST","/");
-    xmlhttp.setRequestHeader("Content-Type","application/json");
-    xmlhttp.send(JSON.stringify(message));
-    fetchMessages()
-}
 
 function processMessages(){
     messageDiv = document.getElementById("messages")
@@ -38,10 +27,4 @@ setInterval(fetchMessages,1000)
 
 <body>
 <div id="messages"></div>
-
-  Name:
-  <input id="username" type="text" name="username" value="">
-  Message:
-  <input id="message" type="text" name="message" value="">
-  <input type="submit" onclick="postMessage()" value="Submit">
 </body>
