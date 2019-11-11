@@ -1,27 +1,26 @@
 
 <script>
 
-
-function processMessages(){
+unction processMessages(){ //Process new messages as they are fetched
     messageDiv = document.getElementById("messages")
-    messageDiv.innerHTML = ""
+    messageDiv.innerHTML = "" //Blank out the messages area
     var index = 0;
-    messages =  JSON.parse(this.responseText);
+    messages =  JSON.parse(this.responseText); //Decode the raw messages
     for (index = 0;index < messages.length; index++){
-        date = new Date(messages[index]["time"]*1000)
-        messageDiv.innerHTML += date.toLocaleString()+":<b>"+messages[index]["username"]+"</b>:"+messages[index]["message"]+"<br>";
+        date = new Date(messages[index]["time"]*1000) //Get the time date fields from utc eproch that exists in message
+        messageDiv.innerHTML += date.toLocaleString()+":<b>"+messages[index]["username"]+"</b>:"+messages[index]["message"]+"<br>"; //Add each message to div
     }
 
 }
 
-function fetchMessages(){
-    request = new XMLHttpRequest();
-    request.addEventListener("load",processMessages)
-    request.open("GET","/messages")
-    request.send()
+function fetchMessages(){ //Fetch messages
+    request = new XMLHttpRequest(); //MAke a new request 
+    request.addEventListener("load",processMessages) //Add a lsitener to handle the returned data
+    request.open("GET","/messagehistory") 
+    request.send() //Actually send request
 }
 
-setInterval(fetchMessages,1000)
+setInterval(fetchMessages,1000) //Request new messages every second
 
 </script>
 

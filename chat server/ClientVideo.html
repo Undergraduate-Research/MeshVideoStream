@@ -1,65 +1,58 @@
 
 <script>
 
-function postMessage(){
+function postMessage(){ //Post message to server
     
     message = {}
-    message["username"] = document.getElementById("username").value
-    message["message"] = document.getElementById("message").value
-    xmlhttp = new XMLHttpRequest();
+    message["username"] = document.getElementById("username").value //Get username from field
+    message["message"] = document.getElementById("message").value  //Get message from field
+    xmlhttp = new XMLHttpRequest(); //Make a new request
     xmlhttp.open("POST","/");
-    xmlhttp.setRequestHeader("Content-Type","application/json");
-    xmlhttp.send(JSON.stringify(message));
-    fetchMessages()
-    document.getElementById("message").value = ""
+    xmlhttp.setRequestHeader("Content-Type","application/json"); //Send the content-type header
+    xmlhttp.send(JSON.stringify(message)); //Send the message as json
+    fetchMessages() //Get new messages
+    document.getElementById("message").value = "" //Blank out old message field
 }
 
-function processMessages(){
+function processMessages(){ //Process new messages as they are fetched
     messageDiv = document.getElementById("messages")
-    messageDiv.innerHTML = ""
+    messageDiv.innerHTML = "" //Blank out the messages area
     var index = 0;
-    messages =  JSON.parse(this.responseText);
+    messages =  JSON.parse(this.responseText); //Decode the raw messages
     for (index = 0;index < messages.length; index++){
-        date = new Date(messages[index]["time"]*1000)
-        messageDiv.innerHTML += date.toLocaleString()+":<b>"+messages[index]["username"]+"</b>:"+messages[index]["message"]+"<br>";
+        date = new Date(messages[index]["time"]*1000) //Get the time date fields from utc eproch that exists in message
+        messageDiv.innerHTML += date.toLocaleString()+":<b>"+messages[index]["username"]+"</b>:"+messages[index]["message"]+"<br>"; //Add each message to div
     }
 
 }
-imageData = ""
+
 function processVideo(){
    video = document.getElementById("video")
-    
-    
-    video.src = "data:image/jpeg;base64, "+this.responseText;
-    
-    
+   video.src = "data:image/jpeg;base64, "+this.responseText; //Make the image be the newly fetched frame
 }
 
-function fetchMessages(){
-   
-    request = new XMLHttpRequest();
-    request.addEventListener("load",processMessages)
-    request.open("GET","/messages")
-    request.send()
+function fetchMessages(){ //Fetch messages
+    request = new XMLHttpRequest(); //Make a new request 
+    request.addEventListener("load",processMessages) //Add a lsitener to handle the returned data
+    request.open("GET","/messages") //Set request to be a GET request to /messages
+    request.send() //Actually send request
 }
 
-
-
-function fetchFrame(){
-    request = new XMLHttpRequest();
-    request.addEventListener("load",processVideo)
-    request.open("GET","/frame")
-    request.send()
+function fetchFrame(){//Fetch frame
+    request = new XMLHttpRequest();//Make a new request 
+    request.addEventListener("load",processVideo) //Add a lsitener to handle the returned data
+    request.open("GET","/frame") //Set request to be a GET request to /frame
+    request.send() //Actually send request
 }
 
-setInterval(fetchMessages,1000)
-kill_video = setInterval(fetchFrame,50)
+setInterval(fetchMessages,1000) //Request new messages every second
+kill_video = setInterval(fetchFrame,50) //Request new messages every 50 ms
 
-function setDelay(){
+function setDelay(){ //Change video fetch delay
     console.log("Killing video")
-    delay = document.getElementById("delay").value
-    clearInterval(kill_video)
-    kill_video = setInterval(fetchFrame,delay)
+    delay = document.getElementById("delay").value //Get new delay from field
+    clearInterval(kill_video) //Stop old interval
+    kill_video = setInterval(fetchFrame,delay) //Start new interval
 }
 
 
