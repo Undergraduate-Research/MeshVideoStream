@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler,HTTPServer,ThreadingHTTPServer
 import socket
 import json
-from cv2 import VideoCapture
+from cv2 import VideoCapture,IMWRITE_JPEG_QUALITY
 import cv2
 import numpy
 import base64
@@ -17,8 +17,8 @@ lastTenMessages = [] #Stores just the last few
 def GetFrame():
     global frame
     ret,raw_frame = capture.read() #Read camera
-    frame2 = cv2.resize(raw_frame,(320//2,240//2)) # Resize the frame
-    frame =base64.b64encode(cv2.imencode('.jpeg',frame2)[1].tostring()) #Convert it to JPEG data then base64 encode
+    frame2 = cv2.resize(raw_frame,(320,240)) # Resize the frame
+    frame =base64.b64encode(cv2.imencode('.jpeg',frame2,[int(IMWRITE_JPEG_QUALITY),30])[1].tostring()) #Convert it to JPEG data then base64 encode
 
 GetFrame() #Get an intital frame
     
