@@ -10,7 +10,9 @@ import time
 capture = VideoCapture(0) #Video Source
 
 messageHistory = [] #Stores all messgaes
-lastTenMessages = [] #Stores just the last few
+
+html_escape_table = {"&":"&amp;",'"':"&quot;","'":"&apos;",">":"&qt;","<":"&lt;"}
+
 
 def GetFrame():
     global frame
@@ -20,7 +22,10 @@ def GetFrame():
 
 GetFrame() #Get an intital frame
     
-    
+def sanatize(text):
+    for x in html_escape_table.keys():
+        text = text.replace(x,html_escape_table[x])
+    return text
 
 def loadHTML(): #Load the main client html file
     htmlFile = open("Client.html","rb")
@@ -85,7 +90,10 @@ class ClientHandler(BaseHTTPRequestHandler):
         
         if self.headers.get('Content-Type') == 'application/json': #Make sure it is actually the correct format
             message = json.loads(self.rfile.read(contentLen).decode("utf-8")) #Decode the text to a python object using the json library
-            message["time"]=int(time.time())  #Add the time into the message
+            message["time"]=int(time.time())  #Add the time into the message.
+            print(message)
+            message["message"] = sanatize(message["message"])
+            print(message)
 	    
         else:
             self.send_response(400) #If incorrect format return an error status
