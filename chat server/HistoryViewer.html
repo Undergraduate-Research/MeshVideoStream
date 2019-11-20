@@ -16,7 +16,7 @@ unction processMessages(){ //Process new messages as they are fetched
 function fetchMessages(){ //Fetch messages
     request = new XMLHttpRequest(); //MAke a new request 
     request.addEventListener("load",processMessages) //Add a lsitener to handle the returned data
-    request.open("GET","/messagehistory") 
+    request.open("GET","/message_history") 
     request.send() //Actually send request
 }
 

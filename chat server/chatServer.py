@@ -12,8 +12,6 @@ capture = VideoCapture(0) #Video Source
 messageHistory = [] #Stores all messgaes
 lastTenMessages = [] #Stores just the last few
 
-
-
 def GetFrame():
     global frame
     ret,raw_frame = capture.read() #Read camera
@@ -60,7 +58,7 @@ class ClientHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps(lastTenMessages).encode("utf-8")) #Send the messages in JSON format
+            self.wfile.write(json.dumps(messageHistory[-20:]).encode("utf-8")) #Send the messages in JSON format
             self.server.path = self.path
         elif self.path == "/message_history": #Handle request for message history
             self.send_response(200)
@@ -94,9 +92,8 @@ class ClientHandler(BaseHTTPRequestHandler):
             self.end_headers() 
             return   
         messageHistory.append(message) #Add message to history
-        lastTenMessages.append(message) #Add message to last messages
-        if len(lastTenMessages) > 50:
-            lastTenMessages.pop(0) #Prune away old message
+
+        
         self.send_response(202)
         self.end_headers()   
         
