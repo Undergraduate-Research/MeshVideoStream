@@ -21,6 +21,7 @@ def GetFrame():
     frame =base64.b64encode(cv2.imencode('.jpeg',frame2,[int(IMWRITE_JPEG_QUALITY),30])[1].tostring()) #Convert it to JPEG data then base64 encode
 
 GetFrame() #Get an intital frame
+  
     
 def sanatize(text):
     for x in html_escape_table.keys():
